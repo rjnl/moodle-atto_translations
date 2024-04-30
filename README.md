@@ -1,9 +1,15 @@
+# Translations #
+
+This is a companion plugin for the [Content Translations](https://moodle.org/plugins/filter_translations) plugin.
+
+It injects a special tag in the text that is saved to support the filter_translations plugin.
+
 # To Install it manually #
 - Unzip the plugin in the moodle .../lib/editor/atto/plugins/ directory.
 - Also install the translation filter from: https://github.com/andrewhancox/moodle-filter_translations/blob/main/README.md
 
 # To Enable it #
-- Go to "Site Administration &gt;&gt; Plugins &gt;&gt; Text Editors &gt;&gt; Atto HTML editor &gt;&gt; Atto toolbar settings" 
+- Go to "Site Administration &gt;&gt; Plugins &gt;&gt; Text Editors &gt;&gt; Atto HTML editor &gt;&gt; Atto toolbar settings"
 - Add 'translations' to the Toolbar config.
 
 # To Use it #
