@@ -44,7 +44,8 @@ var COMPONENTNAME = 'atto_translations',
         '</form>';
 
 var translationbuttonobject = {
-    translationhashregex: /<span data-translationhash[ ]*=[ ]*[\'"]+([a-zA-Z0-9]+)[\'"]+[ ]*>[ ]*<\/span>/,
+    translationhashregex: /<span\s*data-translationhash\s*=\s*['"]+([a-zA-Z0-9]+)['"]+\s*>\s*<\/span>/g,
+    newtranslationhashregex: /<p class="translationhash">\s*<span\s*data-translationhash\s*=\s*['"]+([a-zA-Z0-9]+)['"]+\s*>\s*<\/span>\s*<\/p>/,
 
     /**
      * A reference to the dialogue content.
@@ -73,19 +74,38 @@ var translationbuttonobject = {
         var initialvalue = host.textarea.get('value');
         var unusedhash = this.get('unusedhash');
 
-        var foundtranslationspan = translationbuttonobject.translationhashregex.exec(initialvalue);
+        // Match new syntax.
+        var foundtranslationspan = translationbuttonobject.newtranslationhashregex.exec(initialvalue);
+
         if (!unusedhash || foundtranslationspan) {
-            translationhash = foundtranslationspan;
             return;
         }
 
-        translationhash = "<span data-translationhash=\"" + unusedhash + "\"></span>";
+        // Match the old syntax.
+        foundtranslationspan = translationbuttonobject.translationhashregex.exec(initialvalue);
+
+        if (foundtranslationspan) {
+            // Remove the old translation span tags.
+            var foundhash = foundtranslationspan[1];
+            initialvalue = initialvalue.replaceAll(translationbuttonobject.translationhashregex, "");
+
+            // Put translation span tag within <p> element, aka, new syntax.
+            translationhash = "<p class=\"translationhash\"><span data-translationhash=\"" + foundhash + "\"></span></p>";
+            host.textarea.set('value', translationhash + initialvalue);
+            host.updateFromTextArea();
+
+            return;
+        }
+
+
+        // Add span tag to new content.
+        translationhash = "<p class=\"translationhash\"><span data-translationhash=\"" + unusedhash + "\"></span></p>";
         host.textarea.set('value', translationhash + initialvalue);
         host.updateFromTextArea();
 
         // TODO: We are adding a new hash, so cannot replace the hash.
         // Disable the replace hash button.
-        if (button != null) {
+        if (button !== null) {
             button.setAttribute('disabled', 'disabled');
         }
 
@@ -107,7 +127,10 @@ var translationbuttonobject = {
      * @private
      */
     _replaceHash: function(e) {
-        const alltranslationhashregex = /<span data-translationhash[ ]*=[ ]*[\'"]+([a-zA-Z0-9]+)[\'"]+[ ]*>[ ]*<\/span>/g;
+        var oldtranslationhashregex = /<span data-translationhash[ ]*=[ ]*[\'"]+([a-zA-Z0-9]+)[\'"]+[ ]*>[ ]*<\/span>/g;
+        var alltranslationhashregex =
+        /(?:<p>|<p class="translationhash">)\s*<span\s*data-translationhash\s*=\s*['"]+([a-zA-Z0-9]+)['"]+\s*>\s*<\/span>\s*<\/p>/g;
+
         var translationhash;
         var unusedhash = this.get('unusedhash');
 
@@ -117,11 +140,14 @@ var translationbuttonobject = {
         var host = this.get('host');
         var initialvalue = host.textarea.get('value');
 
-        // Remove the old translation span tags.
+        // Remove the old translation span tags - new syntax.
         initialvalue = initialvalue.replaceAll(alltranslationhashregex, "");
 
+        // Remove the old translation span tags - old syntax.
+        initialvalue = initialvalue.replaceAll(oldtranslationhashregex, "");
+
         // Add new translation span tag.
-        translationhash = "<span data-translationhash=\"" + unusedhash + "\"></span>";
+        translationhash = "<p class=\"translationhash\"><span data-translationhash=\"" + unusedhash + "\"></span></p>";
         host.textarea.set('value', translationhash + initialvalue);
         host.updateFromTextArea();
 
@@ -187,7 +213,7 @@ Y.namespace('M.atto_translations').Button = Y.Base.create('button', Y.M.editor_a
             value: false
         },
         showreplacebutton: {
-			value: false
-		}
+            value: false
+        }
     }
 });
