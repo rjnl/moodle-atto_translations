@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die;
 
 $string['confirmation'] = 'Replace translation hash?';
 $string['confirmtext'] = 'Are you sure you want to replace the current translation hash?';
-$string['pluginname'] = 'Translations';
+$string['pluginname'] = 'Translations companion';
 $string['privacy:metadata'] = 'The atto_translations plugin does not store any personal data.';
 $string['replacehash'] = 'Replace content translation hash';
 $string['translations:replacehash'] = 'Replace translation hash key';
