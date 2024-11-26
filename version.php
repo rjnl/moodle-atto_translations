@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 
 $plugin->component = 'atto_translations';
 $plugin->version   = 2024050100;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2020061511;        // Requires this Moodle version.
-$plugin->maturity = MATURITY_STABLE;
+$plugin->release   = '1.2.0';
+$plugin->requires  = 2022112813;        // Requires Moodle version 4.1.13.
+$plugin->maturity  = MATURITY_STABLE;
 $plugin->dependencies = ['filter_translations' => 2024050100];
